@@ -166,24 +166,24 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
      spawn "amixer -q set Master toggle")
 
   -- Decrease volume.
-  , ((modMask .|. controlMask, xK_j),
-     spawn "amixer -q set Master 10%-")
+  , ((modMask .|. shiftMask, xK_comma),
+     spawn "amixer -q set Master 3%-")
 
   -- Increase volume.
-  , ((modMask .|. controlMask, xK_k),
-     spawn "amixer -q set Master 10%+")
+  , ((modMask .|. shiftMask, xK_period),
+     spawn "amixer -q set Master 3%+")
 
   -- Audio previous.
-  , ((0, 0x1008FF16),
-     spawn "")
+  , ((modMask .|. shiftMask, xK_n),
+     spawn "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
 
   -- Play/pause.
-  , ((0, 0x1008FF14),
-     spawn "")
+  , ((modMask .|. shiftMask, xK_p),
+     spawn "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
 
   -- Audio next.
-  , ((0, 0x1008FF17),
-     spawn "")
+  , ((modMask .|. shiftMask, xK_m),
+     spawn "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
 
   -- Eject CD tray.
   , ((0, 0x1008FF2C),
