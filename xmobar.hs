@@ -7,7 +7,7 @@ Config {
     font = "xft:Fixed-8",
     bgColor = "#000000",
     fgColor = "#ffffff",
-    position = Static { xpos = 0, ypos = 0, width = 2560, height = 16 },
+    position = Static { xpos = 0, ypos = 0, width = 3840, height = 16 },
     lowerOnStart = True,
     commands = [
         Run Weather "KPAO" ["-t","<tempF>F <skyCondition>","-L","64","-H","77","-n","#CEFFAC","-h","#FFB6B0","-l","#96CBFE"] 36000,
@@ -15,7 +15,7 @@ Config {
         Run Memory ["-t","Mem: <usedratio>%","-H","8192","-L","4096","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10,
         Run Swap ["-t","Swap: <usedratio>%","-H","1024","-L","512","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10,
         Run Network "em1" ["-t","Net: <rx>, <tx>","-H","200","-L","10","-h","#FFB6B0","-l","#CEFFAC","-n","#FFFFCC"] 10,
-        Run Date "%a %b %_d %l:%M" "date" 10,
+        Run Date "%a %b %_d %l:%M:%S" "date" 10,
         Run StdinReader
     ],
     sepChar = "%",
