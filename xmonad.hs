@@ -103,7 +103,7 @@ myLayout = avoidStruts (
 -- Currently based on the ir_black theme.
 --
 myNormalBorderColor  = "#7c7c7c"
-myFocusedBorderColor = "#ffb6b0"
+myFocusedBorderColor = "#b6ffb0"
 
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
 tabConfig = defaultTheme {
@@ -135,153 +135,145 @@ myBorderWidth = 1
 --
 myModMask = mod4Mask
 
-myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
+myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList bindings
+  where
+    -- Many key combinations start with Mod+Shift.
+    myLeader = myModMask .|. shiftMask
   ----------------------------------------------------------------------
   -- Custom key bindings
   --
 
-  -- Start a terminal.  Terminal to start is specified by myTerminal variable.
-  [ ((modMask .|. shiftMask, xK_Return),
-     spawn $ XMonad.terminal conf)
+    bindings = [
+       -- Start a terminal.  Terminal to start is specified by myTerminal variable.
+      ((myLeader, xK_Return),  spawn $ XMonad.terminal conf)
 
-  -- Lock the screen using command specified by myScreensaver.
-  , ((modMask .|. controlMask, xK_l),
-     spawn myScreensaver)
+      -- Lock the screen using command specified by myScreensaver.
+      , ((myLeader, xK_End), spawn myScreensaver)
 
-  -- Spawn the launcher using command specified by myLauncher.
-  -- Use this to launch programs without a key binding.
-  , ((modMask, xK_p),
-     spawn myLauncher)
+      -- Spawn the launcher using command specified by myLauncher.
+      -- Use this to launch programs without a key binding.
+      , ((modMask, xK_p), spawn myLauncher)
 
-  -- Take a selective screenshot using the command specified by mySelectScreenshot.
-  , ((modMask .|. shiftMask, xK_p),
-     spawn mySelectScreenshot)
+      -- Take a selective screenshot using the command specified by mySelectScreenshot.
+      , ((myLeader, xK_p), spawn mySelectScreenshot)
 
-  -- Take a full screenshot using the command specified by myScreenshot.
-  , ((modMask .|. controlMask .|. shiftMask, xK_p),
-     spawn myScreenshot)
+      -- Take a full screenshot using the command specified by myScreenshot.
+      , ((myLeader .|. controlMask, xK_p), spawn myScreenshot)
 
-  -- Mute volume.
-  , ((modMask .|. controlMask, xK_m),
-     spawn "amixer -q set Master toggle")
+      -- Mute volume.
+      , ((modMask .|. controlMask, xK_m), spawn "amixer -q set Master toggle")
 
-  -- Decrease volume.
-  , ((modMask .|. shiftMask, xK_comma),
-     spawn "amixer -q set Master 3%-")
+      -- Decrease volume.
+      , ((myLeader, xK_comma), spawn "amixer -q set Master 3%-")
 
-  -- Increase volume.
-  , ((modMask .|. shiftMask, xK_period),
-     spawn "amixer -q set Master 3%+")
+      -- Increase volume.
+      , ((myLeader, xK_period), spawn "amixer -q set Master 3%+")
 
-  -- Audio previous.
-  , ((modMask .|. shiftMask, xK_n),
-     spawn "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
+      -- Audio previous.
+      , ((myLeader, xK_n),
+         spawn "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous")
 
-  -- Play/pause.
-  , ((modMask .|. shiftMask, xK_p),
-     spawn "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
+      -- Play/pause.
+      , ((myLeader, xK_p),
+         spawn "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause")
 
-  -- Audio next.
-  , ((modMask .|. shiftMask, xK_m),
-     spawn "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
+      -- Audio next.
+      , ((myLeader, xK_m),
+         spawn "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
 
-  -- Eject CD tray.
-  , ((0, 0x1008FF2C),
-     spawn "eject -T")
+      --------------------------------------------------------------------
+      -- "Standard" xmonad key bindings
+      --
 
-  --------------------------------------------------------------------
-  -- "Standard" xmonad key bindings
-  --
+      -- Close focused window.
+      , ((myLeader, xK_c),
+         kill)
 
-  -- Close focused window.
-  , ((modMask .|. shiftMask, xK_c),
-     kill)
+      -- Cycle through the available layout algorithms.
+      , ((modMask, xK_space),
+         sendMessage NextLayout)
 
-  -- Cycle through the available layout algorithms.
-  , ((modMask, xK_space),
-     sendMessage NextLayout)
+      --  Reset the layouts on the current workspace to default.
+      , ((myLeader, xK_space),
+         setLayout $ XMonad.layoutHook conf)
 
-  --  Reset the layouts on the current workspace to default.
-  , ((modMask .|. shiftMask, xK_space),
-     setLayout $ XMonad.layoutHook conf)
+      -- Resize viewed windows to the correct size.
+      , ((modMask, xK_n),
+         refresh)
 
-  -- Resize viewed windows to the correct size.
-  , ((modMask, xK_n),
-     refresh)
+      -- Move focus to the next window.
+      , ((modMask, xK_Tab),
+         windows W.focusDown)
 
-  -- Move focus to the next window.
-  , ((modMask, xK_Tab),
-     windows W.focusDown)
+      -- Move focus to the next window.
+      , ((modMask, xK_j),
+         windows W.focusDown)
 
-  -- Move focus to the next window.
-  , ((modMask, xK_j),
-     windows W.focusDown)
+      -- Move focus to the previous window.
+      , ((modMask, xK_k),
+         windows W.focusUp  )
 
-  -- Move focus to the previous window.
-  , ((modMask, xK_k),
-     windows W.focusUp  )
+      -- Move focus to the master window.
+      , ((modMask, xK_m),
+         windows W.focusMaster  )
 
-  -- Move focus to the master window.
-  , ((modMask, xK_m),
-     windows W.focusMaster  )
+      -- Swap the focused window and the master window.
+      , ((modMask, xK_Return),
+         windows W.swapMaster)
 
-  -- Swap the focused window and the master window.
-  , ((modMask, xK_Return),
-     windows W.swapMaster)
+      -- Swap the focused window with the next window.
+      , ((myLeader, xK_j),
+         windows W.swapDown  )
 
-  -- Swap the focused window with the next window.
-  , ((modMask .|. shiftMask, xK_j),
-     windows W.swapDown  )
+      -- Swap the focused window with the previous window.
+      , ((myLeader, xK_k),
+         windows W.swapUp    )
 
-  -- Swap the focused window with the previous window.
-  , ((modMask .|. shiftMask, xK_k),
-     windows W.swapUp    )
+      -- Shrink the master area.
+      , ((modMask, xK_h),
+         sendMessage Shrink)
 
-  -- Shrink the master area.
-  , ((modMask, xK_h),
-     sendMessage Shrink)
+      -- Expand the master area.
+      , ((modMask, xK_l),
+         sendMessage Expand)
 
-  -- Expand the master area.
-  , ((modMask, xK_l),
-     sendMessage Expand)
+      -- Push window back into tiling.
+      , ((modMask, xK_t),
+         withFocused $ windows . W.sink)
 
-  -- Push window back into tiling.
-  , ((modMask, xK_t),
-     withFocused $ windows . W.sink)
+      -- Increment the number of windows in the master area.
+      , ((modMask, xK_comma),
+         sendMessage (IncMasterN 1))
 
-  -- Increment the number of windows in the master area.
-  , ((modMask, xK_comma),
-     sendMessage (IncMasterN 1))
+      -- Decrement the number of windows in the master area.
+      , ((modMask, xK_period),
+         sendMessage (IncMasterN (-1)))
 
-  -- Decrement the number of windows in the master area.
-  , ((modMask, xK_period),
-     sendMessage (IncMasterN (-1)))
+      -- Toggle the status bar gap.
+      -- TODO: update this binding with avoidStruts, ((modMask, xK_b),
 
-  -- Toggle the status bar gap.
-  -- TODO: update this binding with avoidStruts, ((modMask, xK_b),
+      -- Quit xmonad.
+      , ((myLeader, xK_q),
+         io (exitWith ExitSuccess))
 
-  -- Quit xmonad.
-  , ((modMask .|. shiftMask, xK_q),
-     io (exitWith ExitSuccess))
+      -- Restart xmonad.
+      , ((modMask, xK_q),
+         restart "xmonad" True)
+      ]
+      ++
 
-  -- Restart xmonad.
-  , ((modMask, xK_q),
-     restart "xmonad" True)
-  ]
-  ++
+      -- mod-[1..9], Switch to workspace N
+      -- mod-shift-[1..9], Move client to workspace N
+      [((m .|. modMask, k), windows $ f i)
+          | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
+          , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
+      ++
 
-  -- mod-[1..9], Switch to workspace N
-  -- mod-shift-[1..9], Move client to workspace N
-  [((m .|. modMask, k), windows $ f i)
-      | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
-      , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
-  ++
-
-  -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
-  -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
-  [((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
-      | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
-      , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
+      -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
+      -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
+      [((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
+          | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
+          , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
 
 ------------------------------------------------------------------------
