@@ -5,6 +5,7 @@
 import System.IO
 import System.Exit
 import XMonad
+import qualified XMonad.Actions.Navigation2D as N2D
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
@@ -39,7 +40,7 @@ myScreenshot = "scrot"
 
 -- The command to use as a launcher, to launch commands that don't have
 -- preset keybindings.
-myLauncher = "dmenu_run" -- "$(yeganesh -x -- -fn '-*-terminus-*-r-normal-*-*-120-*-*-*-*-iso8859-*' -nb '#000000' -nf '#FFFFFF' -sb '#7C7C7C' -sf '#CEFFAC')"
+myLauncher = "dmenu_run"
 
 
 ------------------------------------------------------------------------
@@ -181,84 +182,79 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList bindings
       , ((myLeader, xK_m),
          spawn "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next")
 
+      -- Directional navigation of windows
+      , ((modMask, xK_Right), N2D.windowGo R False)
+      , ((modMask, xK_Left), N2D.windowGo L False)
+      , ((modMask, xK_Up), N2D.windowGo U False)
+      , ((modMask, xK_Down), N2D.windowGo D False)
+
+
+      -- Directional navigation of screens
+      , ((myLeader, xK_Right), N2D.screenGo R False)
+      , ((myLeader, xK_Left), N2D.screenGo L False)
+      , ((myLeader, xK_Up), N2D.screenGo U False)
+      , ((myLeader, xK_Down), N2D.screenGo D False)
       --------------------------------------------------------------------
       -- "Standard" xmonad key bindings
       --
 
       -- Close focused window.
-      , ((myLeader, xK_c),
-         kill)
+      , ((myLeader, xK_c), kill)
 
       -- Cycle through the available layout algorithms.
-      , ((modMask, xK_space),
-         sendMessage NextLayout)
+      , ((modMask, xK_space), sendMessage NextLayout)
 
       --  Reset the layouts on the current workspace to default.
-      , ((myLeader, xK_space),
-         setLayout $ XMonad.layoutHook conf)
+      , ((myLeader, xK_space), setLayout $ XMonad.layoutHook conf)
 
       -- Resize viewed windows to the correct size.
-      , ((modMask, xK_n),
-         refresh)
+      , ((modMask, xK_n), refresh)
 
       -- Move focus to the next window.
-      , ((modMask, xK_Tab),
-         windows W.focusDown)
+      , ((modMask, xK_Tab), windows W.focusDown)
 
       -- Move focus to the next window.
-      , ((modMask, xK_j),
-         windows W.focusDown)
+      , ((modMask, xK_j), windows W.focusDown)
 
       -- Move focus to the previous window.
-      , ((modMask, xK_k),
-         windows W.focusUp  )
+      , ((modMask, xK_k), windows W.focusUp)
 
       -- Move focus to the master window.
       , ((modMask, xK_m),
-         windows W.focusMaster  )
+         windows W.focusMaster)
 
       -- Swap the focused window and the master window.
-      , ((modMask, xK_Return),
-         windows W.swapMaster)
+      , ((modMask, xK_Return), windows W.swapMaster)
 
       -- Swap the focused window with the next window.
-      , ((myLeader, xK_j),
-         windows W.swapDown  )
+      , ((myLeader, xK_j), windows W.swapDown)
 
       -- Swap the focused window with the previous window.
-      , ((myLeader, xK_k),
-         windows W.swapUp    )
+      , ((myLeader, xK_k), windows W.swapUp)
 
       -- Shrink the master area.
-      , ((modMask, xK_h),
-         sendMessage Shrink)
+      , ((modMask, xK_h), sendMessage Shrink)
 
       -- Expand the master area.
-      , ((modMask, xK_l),
-         sendMessage Expand)
+      , ((modMask, xK_l), sendMessage Expand)
 
       -- Push window back into tiling.
-      , ((modMask, xK_t),
-         withFocused $ windows . W.sink)
+      , ((modMask, xK_t), withFocused $ windows . W.sink)
 
       -- Increment the number of windows in the master area.
-      , ((modMask, xK_comma),
-         sendMessage (IncMasterN 1))
+      , ((modMask, xK_comma), sendMessage (IncMasterN 1))
 
       -- Decrement the number of windows in the master area.
-      , ((modMask, xK_period),
-         sendMessage (IncMasterN (-1)))
+      , ((modMask, xK_period), sendMessage (IncMasterN (-1)))
 
       -- Toggle the status bar gap.
       -- TODO: update this binding with avoidStruts, ((modMask, xK_b),
 
       -- Quit xmonad.
-      , ((myLeader, xK_q),
-         io (exitWith ExitSuccess))
+      , ((myLeader, xK_q), io (exitWith ExitSuccess))
 
       -- Restart xmonad.
-      , ((modMask, xK_q),
-         restart "xmonad" True)
+      , ((modMask, xK_q), restart "xmonad" True)
       ]
       ++
 
